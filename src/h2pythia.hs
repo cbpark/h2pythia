@@ -7,20 +7,20 @@
 
 module Main where
 
-import           HEP.Data.THDM.Width
+import HEP.Data.THDM.Width
 
-import           HEP.Data.Kinematics (Mass (..))
-import           HEP.Data.THDM
-import           HEP.Data.Util       (mkAngles)
+import HEP.Data.Kinematics (Mass (..))
+import HEP.Data.THDM
+import HEP.Data.Util       (mkAngles)
 
-import           Options.Generic
+import Options.Generic
+import Pipes               (runEffect, (>->))
+import Pipes.Lift          (runReaderP)
 
-import           Control.Monad       (when)
-import           Data.Maybe          (fromMaybe)
-import           Pipes
-import           Pipes.Lift          (runReaderP)
-import qualified Pipes.Prelude       as P
-import           System.Exit         (die)
+import Control.Monad       (when)
+import Data.Maybe          (fromMaybe)
+import System.Exit         (die)
+import System.IO           (stdout, hPutStrLn)
 
 main :: IO ()
 main = do
@@ -52,11 +52,17 @@ main = do
                            , _m12   = Mass m12Val
                            , _angs  = mkAngles tanbVal cosbaVal
                            }
-    putStrLn $ "eCM = " ++ show sqrtS
-    print param
 
+    hPutStrLn stdout $ "Beams:eCM = " <> show sqrtS <> "\n"
+
+    hPutStrLn stdout $ "35:m0 = " <> show mHVal
     runEffect $
-        runReaderP param (runh2decays h2decaysExec >-> getWidth) >-> P.print
+        runReaderP param (runh2decays h2decaysExec >-> getWidth)
+        >-> printWidth stdout
+
+    hPutStrLn stdout $ "36:m0 = " <> show mAVal
+
+    hPutStrLn stdout $ "37:m0 = " <> show mHpVal
 
 data InputArgs w = InputArgs
     { h2decays :: w ::: FilePath     <?> "the executable path of h2decays"

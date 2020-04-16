@@ -9,6 +9,9 @@ import Data.ByteString.Char8            (pack)
 import Pipes
 import System.Process                   (readProcessWithExitCode)
 
+import Control.Monad                    (forever)
+import System.IO                        (Handle, hPutStrLn)
+
 runh2decays :: MonadIO m
              => FilePath -> Producer (Maybe BRH2) (ReaderT InputParam m) ()
 runh2decays h2decaysExe = do
@@ -25,3 +28,10 @@ getWidth = do
     yield $ case brs0 of
                 Nothing  -> Nothing
                 Just brs -> Just (_totalWidth brs)
+
+printWidth :: MonadIO m => Handle -> Consumer (Maybe Double) m ()
+printWidth h = forever $ do
+    w0 <- await
+    case w0 of
+        Nothing -> return ()
+        Just w  -> liftIO . hPutStrLn h $ "35:mWidth = " <> show w
