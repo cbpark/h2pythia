@@ -7,15 +7,20 @@
 
 module Main where
 
-import HEP.Data.Kinematics (Mass (..))
-import HEP.Data.THDM
-import HEP.Data.Util       (mkAngles)
+import           HEP.Data.THDM.Width
 
-import Options.Generic
+import           HEP.Data.Kinematics (Mass (..))
+import           HEP.Data.THDM
+import           HEP.Data.Util       (mkAngles)
 
-import Control.Monad       (when)
-import Data.Maybe          (fromMaybe)
-import System.Exit         (die)
+import           Options.Generic
+
+import           Control.Monad       (when)
+import           Data.Maybe          (fromMaybe)
+import           Pipes
+import           Pipes.Lift          (runReaderP)
+import qualified Pipes.Prelude       as P
+import           System.Exit         (die)
 
 main :: IO ()
 main = do
@@ -35,7 +40,9 @@ main = do
         mAVal = fromMaybe mHpVal (mA inp)
         m12Val = fromMaybe (defaultM12 tanbVal mHVal) (m12 inp)
 
-    putStrLn $ "-- m_{H+} = " ++ show mHpVal ++ ", tan(beta) = " ++ show tanbVal
+    putStrLn $ "-- m_{H} = " ++ show mHVal
+        ++ ", m_{H+} = " ++ show mHpVal
+        ++ ", tan(beta) = " ++ show tanbVal
         ++ ", cos(beta - alpha) = " ++ show cosbaVal
 
     let param = InputParam { _mdtyp = mdtypVal
@@ -47,6 +54,9 @@ main = do
                            }
     putStrLn $ "eCM = " ++ show sqrtS
     print param
+
+    runEffect $
+        runReaderP param (runh2decays h2decaysExec >-> getWidth) >-> P.print
 
 data InputArgs w = InputArgs
     { h2decays :: w ::: FilePath     <?> "the executable path of h2decays"

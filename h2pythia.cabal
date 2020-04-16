@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f7982f5f29b349bbd998a43a31bb39b8bbaab61eaba90cc899b9211ca7f8b3d3
+-- hash: a1fd4490a8d0064083e04f1fa69b47582367516ee9b9391a7686a3345663712a
 
 name:           h2pythia
 version:        0.0.0.0
@@ -25,12 +25,18 @@ source-repository head
 executable h2pythia
   main-is: h2pythia.hs
   other-modules:
+      HEP.Data.THDM.Width
       Paths_h2pythia
   hs-source-dirs:
       src
   ghc-options: -Wall -Wcompat -O2 -funbox-strict-fields
   build-depends:
-      base >=4.12.0.0 && <5
+      attoparsec
+    , base >=4.12.0.0 && <5
+    , bytestring
     , h2decays
     , optparse-generic
+    , pipes
+    , process
+    , transformers
   default-language: Haskell2010
