@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: ae039c38f2ad6b2bced8f8dd079d260f70b924e5bbc1fcb2ba7018514cd49bec
+-- hash: 2ba93e694b06d8d80fcde07e13936bb1a2a0764fa2a8984a5a7301fda410558a
 
 name:           h2pythia
 version:        0.0.0.0
@@ -31,4 +31,5 @@ executable h2pythia
   ghc-options: -Wall -Wcompat -O2 -funbox-strict-fields
   build-depends:
       base >=4.12.0.0 && <5
+    , h2decays
   default-language: Haskell2010
