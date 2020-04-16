@@ -17,3 +17,4 @@ executables:
   h2pythia:
     main: h2pythia.hs
     source-dirs: src
+    dependencies: [optparse-generic]
