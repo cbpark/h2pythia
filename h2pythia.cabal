@@ -1,0 +1,34 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.33.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: ae039c38f2ad6b2bced8f8dd079d260f70b924e5bbc1fcb2ba7018514cd49bec
+
+name:           h2pythia
+version:        0.0.0.0
+synopsis:       Generating input files to run Pythia 8 for the heavy Higgs processes in the 2HDM
+category:       Physics
+homepage:       https://github.com/cbpark/h2pythia#readme
+bug-reports:    https://github.com/cbpark/h2pythia/issues
+author:         Chan Beom Park
+maintainer:     cbpark@gmail.com
+license:        GPL-3
+license-file:   LICENSE
+build-type:     Simple
+
+source-repository head
+  type: git
+  location: https://github.com/cbpark/h2pythia
+
+executable h2pythia
+  main-is: h2pythia.hs
+  other-modules:
+      Paths_h2pythia
+  hs-source-dirs:
+      src
+  ghc-options: -Wall -Wcompat -O2 -funbox-strict-fields
+  build-depends:
+      base >=4.12.0.0 && <5
+  default-language: Haskell2010

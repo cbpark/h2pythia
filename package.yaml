@@ -1,0 +1,18 @@
+name:         h2pythia
+version:      "0.0.0.0"
+synopsis:     Generating input files to run Pythia 8 for the heavy Higgs processes in the 2HDM
+author:       Chan Beom Park
+maintainer:   cbpark@gmail.com
+license-file: LICENSE
+github:       cbpark/h2pythia
+category:     Physics
+
+ghc-options:  -Wall -Wcompat -O2 -funbox-strict-fields
+
+dependencies:
+  - base >= 4.12.0.0 && < 5
+
+executables:
+  h2pythia:
+    main: h2pythia.hs
+    source-dirs: src
