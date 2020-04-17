@@ -1,6 +1,6 @@
 {-# LANGUAGE RecordWildCards #-}
 
-module HEP.Data.THDM.Coupling (coupH2) where
+module HEP.Data.THDM.Coupling (coupH2, coupHp) where
 
 import HEP.Data.Constants  (gW, mW, mZ)
 import HEP.Data.Kinematics (Mass (..), massSq)
@@ -56,3 +56,10 @@ coup2A3A3 InputParam {..} = (/ g) $ gHAA _mH _mA _m12 _angs
 
 coup2HchgW :: InputParam -> Double
 coup2HchgW InputParam {..} = sinBetaAlpha _angs
+
+coupHp :: InputParam -> String
+coupHp InputParam {..} = tanb <> cH1W <> cH2W
+  where
+    tanb = "HiggsHchg:tanBeta = "  <> show (tanBeta      _angs) <> "\n"
+    cH1W = "HiggsHchg:coup2H1W = " <> show (cosBetaAlpha _angs) <> "\n"
+    cH2W = "HiggsHchg:coup2H2W = " <> show (sinBetaAlpha _angs) <> "\n"

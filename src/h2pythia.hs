@@ -7,8 +7,8 @@
 
 module Main where
 
-import HEP.Data.THDM.Coupling (coupH2)
-import HEP.Data.THDM.Width
+import HEP.Data.THDM.Coupling (coupH2, coupHp)
+import HEP.Data.THDM.Width    (printWidthH2, printWidthHp)
 
 import HEP.Data.Kinematics    (Mass (..))
 import HEP.Data.THDM
@@ -19,7 +19,7 @@ import Options.Generic
 import Control.Monad          (when)
 import Data.Maybe             (fromMaybe)
 import System.Exit            (die)
-import System.IO              (hPutStrLn, stdout)
+import System.IO              (IOMode (..), hPutStrLn, withFile)
 
 main :: IO ()
 main = do
@@ -54,24 +54,30 @@ main = do
                            , _angs  = mkAngles tanbVal cosbaVal
                            }
 
-    hPutStrLn stdout $ "Beams:eCM = " <> show sqrtS <> "\n"
+    let outfile = fromMaybe "pythia8.cmnd" (card inp)
+    withFile outfile WriteMode $ \h -> do
+        hPutStrLn h $ "Beams:eCM = " <> show sqrtS <> "\n"
+        hPutStrLn h "Higgs:useBSM = on\n"
 
-    hPutStrLn stdout $ "! the H2 couplings\n"
-        <> "! See http://home.thep.lu.se/~torbjorn/pythia82html/HiggsProcesses.html"
+        hPutStrLn h $ "! the H2 couplings\n"
+            <> "! See http://home.thep.lu.se/~torbjorn/pythia82html/HiggsProcesses.html"
+        hPutStrLn h $ coupH2 param
 
-    hPutStrLn stdout $ coupH2 param
-    hPutStrLn stdout $ "HiggsHchg:tanBeta = " <> show tanbVal <> "\n"
+        hPutStrLn h "! the H+ couplings"
+        hPutStrLn h $ coupHp param
 
-    hPutStrLn stdout "! H2"
-    hPutStrLn stdout $ "35:m0 = " <> show mHVal
-    printWidthH2 stdout h2decaysExec param
+        hPutStrLn h "! H2"
+        hPutStrLn h $ "35:m0 = " <> show mHVal
+        printWidthH2 h h2decaysExec param
 
-    hPutStrLn stdout "! A"
-    hPutStrLn stdout $ "36:m0 = " <> show mAVal
+        hPutStrLn h "\n! A"
+        hPutStrLn h $ "36:m0 = " <> show mAVal
 
-    hPutStrLn stdout "! H+"
-    hPutStrLn stdout $ "37:m0 = " <> show mHpVal
-    printWidthHp stdout hpdecaysExec param
+        hPutStrLn h "\n! H+"
+        hPutStrLn h $ "37:m0 = " <> show mHpVal
+        printWidthHp h hpdecaysExec param
+
+    putStrLn $ "-- " ++ outfile ++ " has been generated."
 
 data InputArgs w = InputArgs
     { h2decays :: w ::: FilePath     <?> "the executable path of h2decays"
