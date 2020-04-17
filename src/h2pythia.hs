@@ -7,20 +7,19 @@
 
 module Main where
 
+import HEP.Data.THDM.Coupling (coupH2)
 import HEP.Data.THDM.Width
 
-import HEP.Data.Kinematics (Mass (..))
+import HEP.Data.Kinematics    (Mass (..))
 import HEP.Data.THDM
-import HEP.Data.Util       (mkAngles)
+import HEP.Data.Util          (mkAngles)
 
 import Options.Generic
-import Pipes               (runEffect, (>->))
-import Pipes.Lift          (runReaderP)
 
-import Control.Monad       (when)
-import Data.Maybe          (fromMaybe)
-import System.Exit         (die)
-import System.IO           (stdout, hPutStrLn)
+import Control.Monad          (when)
+import Data.Maybe             (fromMaybe)
+import System.Exit            (die)
+import System.IO              (hPutStrLn, stdout)
 
 main :: IO ()
 main = do
@@ -29,7 +28,9 @@ main = do
            " for the heavy Higgs process in the 2HDM"
 
     let h2decaysExec = h2decays inp
+        hpdecaysExec = hpdecays inp
     putStrLn $ "-- We use h2decays from " ++ h2decaysExec
+        ++ ", and hpdecays from " ++ hpdecaysExec
 
     let mdtypVal = fromIntToType $ fromMaybe 2 (mtype inp)
     when (mdtypVal == UnknownType) $ die "-- The type must be either 1 or 2."
@@ -55,17 +56,26 @@ main = do
 
     hPutStrLn stdout $ "Beams:eCM = " <> show sqrtS <> "\n"
 
-    hPutStrLn stdout $ "35:m0 = " <> show mHVal
-    runEffect $
-        runReaderP param (runh2decays h2decaysExec >-> getWidth)
-        >-> printWidth stdout
+    hPutStrLn stdout $ "! the H2 couplings\n"
+        <> "! See http://home.thep.lu.se/~torbjorn/pythia82html/HiggsProcesses.html"
 
+    hPutStrLn stdout $ coupH2 param
+    hPutStrLn stdout $ "HiggsHchg:tanBeta = " <> show tanbVal <> "\n"
+
+    hPutStrLn stdout "! H2"
+    hPutStrLn stdout $ "35:m0 = " <> show mHVal
+    printWidthH2 stdout h2decaysExec param
+
+    hPutStrLn stdout "! A"
     hPutStrLn stdout $ "36:m0 = " <> show mAVal
 
+    hPutStrLn stdout "! H+"
     hPutStrLn stdout $ "37:m0 = " <> show mHpVal
+    printWidthHp stdout hpdecaysExec param
 
 data InputArgs w = InputArgs
     { h2decays :: w ::: FilePath     <?> "the executable path of h2decays"
+    , hpdecays :: w ::: FilePath     <?> "the executable path of hpdecays"
     , eCM      :: w ::: Maybe Double <?>
         "center-of-mass energy in GeV (default: 13000 GeV)"
     , mtype    :: w ::: Maybe Int    <?> "model type (either 1 or 2)"

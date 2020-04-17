@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a1fd4490a8d0064083e04f1fa69b47582367516ee9b9391a7686a3345663712a
+-- hash: e8954657ba96e55c0b07794296a13187df8ad42e60f6f4648e95d2e90f43b0e4
 
 name:           h2pythia
 version:        0.0.0.0
@@ -25,6 +25,7 @@ source-repository head
 executable h2pythia
   main-is: h2pythia.hs
   other-modules:
+      HEP.Data.THDM.Coupling
       HEP.Data.THDM.Width
       Paths_h2pythia
   hs-source-dirs:
