@@ -69,13 +69,15 @@ main = do
         hPutStrLn h "! H2"
         hPutStrLn h $ "35:m0 = " <> show mHVal
         printWidthH2 h h2decaysExec param
+        hPutStrLn h "35:doForceWidth = on\n"
 
-        hPutStrLn h "\n! A"
+        hPutStrLn h "! A"
         hPutStrLn h $ "36:m0 = " <> show mAVal
 
         hPutStrLn h "\n! H+"
         hPutStrLn h $ "37:m0 = " <> show mHpVal
         printWidthHp h hpdecaysExec param
+        hPutStrLn h "37:doForceWidth = on"
 
     putStrLn $ "-- " ++ outfile ++ " has been generated."
 
